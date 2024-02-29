@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://github.com/InterstellarNetwork/Interstellar/assets/89202835/77c63680-544b-42e9-88d6-d288e7681e82">
+    <img src="https://github.com/Xtendera/InterPlusPlus/assets/89202835/77c63680-544b-42e9-88d6-d288e7681e82">
     <p>Serving over 7 million users since 2023.<p>
 </div>
 
@@ -29,8 +29,8 @@ If you fork this project, consider giving it a star in the original repository!
 
 **Note:** You **cannot** deploy to static web hosts, including Netlify, Cloudflare Pages, and GitHub Pages.
 
-<a target="_blank" href="https://heroku.com/deploy/?template=https://github.com/interstellarnetwork/interstellar"><img alt="Deploy to Heroku" src="https://binbashbanana.github.io/deploy-buttons/buttons/remade/heroku.svg"></a>
-<a target="_blank" href="https://app.koyeb.com/deploy?type=git&repository=github.com/interstellarnetwork/interstellar"><img alt="Deploy to Koyeb" src="https://binbashbanana.github.io/deploy-buttons/buttons/remade/koyeb.svg"></a>
+<a target="_blank" href="https://heroku.com/deploy/?template=https://github.com/Xtendera/InterPlusPlus"><img alt="Deploy to Heroku" src="https://binbashbanana.github.io/deploy-buttons/buttons/remade/heroku.svg"></a>
+<a target="_blank" href="https://app.koyeb.com/deploy?type=git&repository=github.com/Xtendera/InterPlusPlus"><img alt="Deploy to Koyeb" src="https://binbashbanana.github.io/deploy-buttons/buttons/remade/koyeb.svg"></a>
 <a target="_blank" href="https://app.cyclic.sh/api/app/deploy/interstellarnetwork/Interstellar"><img alt="Deploy to Cyclic" src="https://binbashbanana.github.io/deploy-buttons/buttons/remade/cyclic.svg"></a>
 
 ### Deployment Alternatives
@@ -71,4 +71,4 @@ If you encounter problems, open an issue on GitHub, and we'll address it promptl
 
 A huge thank you to all of the people who have contributed to Interstellar.
 
-[![Contributors](https://contrib.rocks/image?repo=InterstellarNetwork/Interstellar)](https://github.com/InterstellarNetwork/Interstellar/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=InterstellarNetwork/Interstellar)](https://github.com/Xtendera/InterPlusPlus/graphs/contributors)
