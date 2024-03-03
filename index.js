@@ -1,26 +1,37 @@
 import express from 'express'
-import basicAuth from 'express-basic-auth'
 import http from 'node:http'
 import { createBareServer } from '@tomphttp/bare-server-node'
 import path from 'node:path'
+import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import config from './config.js'
+import { decodeJWT, encodeJWT } from './utils.js'
 const __dirname = process.cwd()
 const server = http.createServer()
 const app = express(server)
 const bareServer = createBareServer('/v/')
 const PORT = process.env.PORT || 8080
+let jwtUsed = false;
+
+app.use(cookieParser());
 if (config.challenge) {
   console.log('Password protection is enabled. Usernames are: ' + Object.keys(config.users))
   console.log('Passwords are: ' + Object.values(config.users))
-
-  app.use(
-    basicAuth({
-      users: config.users,
-      challenge: true,
-    })
-  )
 }
+
+app.use((req, res, next) => {
+  if (req.path == '/l' || req.path.includes('/assets') || req.path == '/api/login') {
+    return next();
+  }
+  const token = req.cookies.gtid;
+  if (!token) {
+    return res.redirect('/l');
+  }
+  if (!decodeJWT(token)) {
+    return res.redirect('/l');
+  }
+  next();
+});
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
@@ -34,6 +45,7 @@ if (config.routes !== false) {
     { path: '/0', file: 'tabs.html' },
     { path: '/1', file: 'go.html' },
     { path: '/', file: 'index.html' },
+    { path: '/l', file: 'login.html' },
   ]
 
   routes.forEach((route) => {
@@ -42,6 +54,28 @@ if (config.routes !== false) {
     })
   })
 }
+
+app.post('/api/login', (req, res) => {
+  let user = req.body.user;
+  let pass = req.body.pass;
+  if (!user && !pass) {
+    return res.sendStatus(401);
+  }
+  user = user.toString();
+  pass = pass.toString();
+  if (user == 'coolboy' && pass == 'blo') {
+    const d = new Date();
+    d.setTime(d.getTime() + (7*24*60*60*1000));
+    return res.send(encodeJWT({
+      sub: '123456789',
+      iat: Date.now(),
+      exp: d,
+      nickname: 'xtendera',
+    }));
+  }
+  return res.sendStatus(401);
+});
+
 if (config.local !== false) {
   app.get('/y/*', (req, res, next) => {
     const baseUrl = 'https://raw.githubusercontent.com/ypxa/y/main'
