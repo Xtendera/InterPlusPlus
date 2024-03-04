@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import config from './config.js'
 import { decodeJWT, encodeJWT } from './utils.js'
+import auth from './auth.js'
 const __dirname = process.cwd()
 const server = http.createServer()
 const app = express(server)
@@ -18,9 +19,26 @@ if (config.challenge) {
   console.log('Password protection is enabled. Usernames are: ' + Object.keys(config.users))
   console.log('Passwords are: ' + Object.values(config.users))
 }
-
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(cors())
 app.use((req, res, next) => {
-  if (req.path == '/l' || req.path.includes('/assets') || req.path == '/api/login') {
+  const whitelist = [
+    '/l',
+    '/api/login',
+    '/assets/scripts/login.js',
+    '/assets/styles/login.css'
+  ];
+  let wa = false;
+  whitelist.forEach(
+    (s) => {
+      if (req.path == s) {
+        console.log(req.path);
+        wa = true;
+      } 
+    }
+  );
+  if (wa) {
     return next();
   }
   const token = req.cookies.gtid;
@@ -32,9 +50,7 @@ app.use((req, res, next) => {
   }
   next();
 });
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(cors())
+app.use(auth);
 app.use(express.static(path.join(__dirname, 'static')))
 
 if (config.routes !== false) {
@@ -54,27 +70,6 @@ if (config.routes !== false) {
     })
   })
 }
-
-app.post('/api/login', (req, res) => {
-  let user = req.body.user;
-  let pass = req.body.pass;
-  if (!user && !pass) {
-    return res.sendStatus(401);
-  }
-  user = user.toString();
-  pass = pass.toString();
-  if (user == 'coolboy' && pass == 'blo') {
-    const d = new Date();
-    d.setTime(d.getTime() + (7*24*60*60*1000));
-    return res.send(encodeJWT({
-      sub: '123456789',
-      iat: Date.now(),
-      exp: d,
-      nickname: 'xtendera',
-    }));
-  }
-  return res.sendStatus(401);
-});
 
 if (config.local !== false) {
   app.get('/y/*', (req, res, next) => {
