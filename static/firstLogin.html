@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="referrer" content="no-referrer" />
@@ -8,16 +7,17 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" id="tab-favicon" href="favicon.png" />
-    <title id="tab-title">Login</title>
+    <title id="tab-title">First-time Setup</title>
     <script src="https://kit.fontawesome.com/1237c86ba0.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
-    <input type="text" name="user" id="user">
-    <br />
-    <input type="password" name="pass" id="pass">
-    <br />
-    <button id="submit">Login</button>
+    <input type="text" name="ftToken" id="ftToken" placeholder="Token from console">
+    <br>
+    <input type="text" name="username" id="username" placeholder="Admin Username">
+    <br>
+    <input type="text" name="password" id="password" placeholder="Admin Password">
+    <br>
+    <button id="submit">Set Up Server</button>
 </body>
-<script src="/assets/scripts/login.js" crossorigin="anonymous"></script>
+<script src="/assets/scripts/firstLogin.js" crossorigin="anonymous"></script>
 </html>

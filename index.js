@@ -5,14 +5,13 @@ import path from 'node:path'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import config from './config.js'
-import { decodeJWT, encodeJWT } from './utils.js'
-import auth from './auth.js'
+import { decodeJWT } from './utils.js'
+import auth, {firstToken} from './auth.js'
 const __dirname = process.cwd()
 const server = http.createServer()
 const app = express(server)
 const bareServer = createBareServer('/v/')
 const PORT = process.env.PORT || 8080
-let jwtUsed = false;
 
 app.use(cookieParser());
 if (config.challenge) {
@@ -23,32 +22,44 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 app.use((req, res, next) => {
-  const whitelist = [
+  let redirectLoc = '/l';
+  let whitelist = [
     '/l',
     '/api/login',
     '/assets/scripts/login.js',
     '/assets/styles/login.css'
   ];
+  if (firstToken) {
+    redirectLoc = '/firstLogin';
+    whitelist = [
+      '/firstLogin',
+      '/api/firstLogin',
+      '/assets/scripts/firstLogin.js',
+      '/assets/styles/firstLogin.css'
+    ];
+  }
+  const token = req.cookies.gtid;
+  if (token && decodeJWT(token)) {
+    whitelist.forEach((s) => {
+      if (req.path == s) {
+        return res.redirect('/');
+      }
+    })
+    return next();
+  }
   let wa = false;
   whitelist.forEach(
     (s) => {
       if (req.path == s) {
-        console.log(req.path);
         wa = true;
       } 
     }
   );
   if (wa) {
     return next();
+  } else {
+    return res.redirect(redirectLoc);
   }
-  const token = req.cookies.gtid;
-  if (!token) {
-    return res.redirect('/l');
-  }
-  if (!decodeJWT(token)) {
-    return res.redirect('/l');
-  }
-  next();
 });
 app.use(auth);
 app.use(express.static(path.join(__dirname, 'static')))
@@ -61,7 +72,7 @@ if (config.routes !== false) {
     { path: '/0', file: 'tabs.html' },
     { path: '/1', file: 'go.html' },
     { path: '/', file: 'index.html' },
-    { path: '/l', file: 'login.html' },
+    { path: '/l', file: 'login.html' }
   ]
 
   routes.forEach((route) => {
@@ -70,6 +81,13 @@ if (config.routes !== false) {
     })
   })
 }
+
+app.get('/firstLogin', (req, res) => {
+  if (firstToken) {
+    return res.sendFile(path.join(__dirname, 'static', 'firstLogin.html'));
+  }
+  return res.sendStatus(401);
+});
 
 if (config.local !== false) {
   app.get('/y/*', (req, res, next) => {

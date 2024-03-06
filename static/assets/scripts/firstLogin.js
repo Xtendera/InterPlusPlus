@@ -6,8 +6,9 @@ function setCookie(cname, cvalue, exdays) {
   }
 
 document.getElementById('submit').addEventListener('click', () => {
-    let user = document.getElementById('user');
-    let pass = document.getElementById('pass');
+    let user = document.getElementById('username');
+    let pass = document.getElementById('password');
+    let token = document.getElementById('ftToken');
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -16,7 +17,7 @@ document.getElementById('submit').addEventListener('click', () => {
             location.reload();
         }
     };
-    xhttp.open("POST", "/api/login");
+    xhttp.open("POST", "/api/firstLogin");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(`user=${encodeURIComponent(user.value.trim())}&pass=${encodeURIComponent(pass.value.trim())}`);
+    xhttp.send(`user=${encodeURIComponent(user.value.trim())}&pass=${encodeURIComponent(pass.value.trim())}&ftToken=${encodeURIComponent(token.value.trim())}`);
 });
